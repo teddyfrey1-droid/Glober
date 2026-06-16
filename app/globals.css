@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-sand text-ink antialiased;
+    font-family: var(--font-inter), system-ui, sans-serif;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-space-grotesk), var(--font-inter), sans-serif;
+    @apply tracking-tight;
+  }
+}
+
+@layer utilities {
+  /* Motif de marque : fines lignes de latitude / méridiens */
+  .bg-map-lines {
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.04) 0px,
+        rgba(255, 255, 255, 0.04) 1px,
+        transparent 1px,
+        transparent 64px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.04) 0px,
+        rgba(255, 255, 255, 0.04) 1px,
+        transparent 1px,
+        transparent 64px
+      );
+  }
+  .bg-map-lines-ink {
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        rgba(14, 26, 43, 0.05) 0px,
+        rgba(14, 26, 43, 0.05) 1px,
+        transparent 1px,
+        transparent 64px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(14, 26, 43, 0.05) 0px,
+        rgba(14, 26, 43, 0.05) 1px,
+        transparent 1px,
+        transparent 64px
+      );
+  }
+}
