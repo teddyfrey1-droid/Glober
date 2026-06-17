@@ -38,9 +38,14 @@ export default async function MissionDetail({
   // Matches déjà proposés.
   const { data: matches } = await supabase
     .from("matches")
-    .select("nomad_id, role")
+    .select("id, nomad_id, role")
     .eq("mission_id", mission.id);
-  const matchBy = new Map((matches ?? []).map((m) => [m.nomad_id, m.role as "primary" | "backup"]));
+  const matchBy = new Map(
+    (matches ?? []).map((m) => [
+      m.nomad_id,
+      { id: m.id as string, role: m.role as "primary" | "backup" },
+    ]),
+  );
 
   // Candidats : nomades vettés de la verticale de la mission.
   const { data: nomads } = await supabase
@@ -98,7 +103,8 @@ export default async function MissionDetail({
           availability: Number(sc?.availability ?? 0),
           global: sc?.global_score ?? null,
         },
-        existingRole: matchBy.get(n.id) ?? null,
+        existingRole: matchBy.get(n.id)?.role ?? null,
+        matchId: matchBy.get(n.id)?.id ?? null,
       };
     })
     .sort((a, b) => b._total - a._total);

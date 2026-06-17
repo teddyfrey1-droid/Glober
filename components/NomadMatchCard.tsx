@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ScoreGauge } from "./ScoreGauge";
 import { proposeMatch } from "@/app/missions/actions";
 
@@ -14,6 +15,7 @@ export type MatchNomad = {
   dayRate: number | null;
   score: { punctuality: number; quality: number; availability: number; global: number | null };
   existingRole: "primary" | "backup" | null;
+  matchId: string | null;
 };
 
 export function NomadMatchCard({
@@ -24,6 +26,8 @@ export function NomadMatchCard({
   nomad: MatchNomad;
 }) {
   const n = nomad;
+  const matched = n.existingRole && n.matchId;
+
   return (
     <div className="rounded-4xl bg-white p-5 shadow-soft ring-1 ring-ink/5">
       <div className="flex items-start gap-3">
@@ -65,24 +69,34 @@ export function NomadMatchCard({
             "TJM sur demande"
           )}
         </span>
-        <div className="flex gap-2">
-          <form action={proposeMatch}>
-            <input type="hidden" name="mission_id" value={missionId} />
-            <input type="hidden" name="nomad_id" value={n.id} />
-            <input type="hidden" name="role" value="primary" />
-            <button className="rounded-full bg-coral px-3 py-1.5 text-xs font-semibold text-white transition hover:brightness-105">
-              Proposer
-            </button>
-          </form>
-          <form action={proposeMatch}>
-            <input type="hidden" name="mission_id" value={missionId} />
-            <input type="hidden" name="nomad_id" value={n.id} />
-            <input type="hidden" name="role" value="backup" />
-            <button className="rounded-full bg-ink px-3 py-1.5 text-xs font-semibold text-sand transition hover:brightness-110">
-              + Binôme
-            </button>
-          </form>
-        </div>
+
+        {matched ? (
+          <Link
+            href={`/threads/${n.matchId}`}
+            className="rounded-full bg-ink px-4 py-1.5 text-xs font-semibold text-sand transition hover:brightness-110"
+          >
+            Discuter →
+          </Link>
+        ) : (
+          <div className="flex gap-2">
+            <form action={proposeMatch}>
+              <input type="hidden" name="mission_id" value={missionId} />
+              <input type="hidden" name="nomad_id" value={n.id} />
+              <input type="hidden" name="role" value="primary" />
+              <button className="rounded-full bg-coral px-3 py-1.5 text-xs font-semibold text-white transition hover:brightness-105">
+                Proposer
+              </button>
+            </form>
+            <form action={proposeMatch}>
+              <input type="hidden" name="mission_id" value={missionId} />
+              <input type="hidden" name="nomad_id" value={n.id} />
+              <input type="hidden" name="role" value="backup" />
+              <button className="rounded-full bg-ink px-3 py-1.5 text-xs font-semibold text-sand transition hover:brightness-110">
+                + Binôme
+              </button>
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );
