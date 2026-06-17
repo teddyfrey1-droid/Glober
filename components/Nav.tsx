@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Logo } from "./Logo";
 
 export function Nav() {
@@ -18,12 +19,20 @@ export function Nav() {
             Verticales
           </a>
         </div>
-        <a
-          href="#waitlist"
-          className="rounded-full bg-coral px-4 py-2 text-sm font-semibold text-white shadow-soft transition hover:brightness-105"
-        >
-          Waitlist
-        </a>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/login"
+            className="hidden text-sm font-medium text-sand/80 transition hover:text-sand sm:block"
+          >
+            Se connecter
+          </Link>
+          <a
+            href="#waitlist"
+            className="rounded-full bg-coral px-4 py-2 text-sm font-semibold text-white shadow-soft transition hover:brightness-105"
+          >
+            Waitlist
+          </a>
+        </div>
       </nav>
     </header>
   );
