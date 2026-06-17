@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { sendMessage } from "@/app/threads/actions";
+import { generateContract } from "@/app/contracts/actions";
 import { inputClass } from "@/components/AuthShell";
 import { Logo } from "@/components/Logo";
 
@@ -48,6 +49,13 @@ export default async function Thread({
       .order("created_at", { ascending: true }),
   ]);
 
+  const [{ data: contract }, { data: profile }] = await Promise.all([
+    supabase.from("contracts").select("id, reference, signed_at").eq("match_id", match.id).maybeSingle(),
+    supabase.from("profiles").select("role").eq("id", user.id).maybeSingle(),
+  ]);
+  const isCompany =
+    (profile?.role ?? (user.user_metadata?.role as string | undefined)) === "company";
+
   return (
     <div className="flex min-h-screen flex-col bg-sand">
       <header className="bg-ink text-sand">
@@ -76,6 +84,30 @@ export default async function Thread({
               {match.role === "backup" ? "Binôme" : "Primary"}
             </span>
           </p>
+        </div>
+
+        <div className="mt-3 flex items-center justify-between rounded-2xl bg-white p-4 text-sm shadow-soft ring-1 ring-ink/5">
+          <span className="text-ink/70">
+            🔐 <span className="font-semibold text-ink">Contrat B2B</span>{" "}
+            {contract
+              ? `· ${contract.reference}${contract.signed_at ? " · signé" : ""}`
+              : "· pas encore généré"}
+          </span>
+          {contract ? (
+            <Link
+              href={`/contracts/${contract.id}`}
+              className="rounded-full bg-ink px-4 py-1.5 text-xs font-semibold text-sand transition hover:brightness-110"
+            >
+              Voir le contrat
+            </Link>
+          ) : isCompany ? (
+            <form action={generateContract}>
+              <input type="hidden" name="match_id" value={match.id} />
+              <button className="rounded-full bg-coral px-4 py-1.5 text-xs font-semibold text-white transition hover:brightness-105">
+                Générer le contrat
+              </button>
+            </form>
+          ) : null}
         </div>
 
         {searchParams.error && (
