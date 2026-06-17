@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { sendMessage } from "@/app/threads/actions";
 import { generateContract } from "@/app/contracts/actions";
+import { leaveReview } from "@/app/reviews/actions";
 import { inputClass } from "@/components/AuthShell";
 import { Logo } from "@/components/Logo";
 
@@ -22,7 +23,7 @@ export default async function Thread({
   searchParams,
 }: {
   params: { matchId: string };
-  searchParams: { error?: string };
+  searchParams: { error?: string; reviewed?: string };
 }) {
   if (!isSupabaseConfigured()) redirect("/login");
   const supabase = createClient();
@@ -55,6 +56,13 @@ export default async function Thread({
   ]);
   const isCompany =
     (profile?.role ?? (user.user_metadata?.role as string | undefined)) === "company";
+
+  const { data: myReview } = await supabase
+    .from("reviews")
+    .select("id")
+    .eq("mission_id", match.mission_id)
+    .eq("author_id", user.id)
+    .maybeSingle();
 
   return (
     <div className="flex min-h-screen flex-col bg-sand">
@@ -109,6 +117,59 @@ export default async function Thread({
             </form>
           ) : null}
         </div>
+
+        <div className="mt-3 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-ink/5">
+          <div className="mb-2 text-sm font-semibold text-ink">⭐ Évaluer la collaboration</div>
+          {myReview ? (
+            <p className="text-sm text-ink/60">
+              Merci, ton avis est enregistré — il met à jour le Nomad Score.
+            </p>
+          ) : (
+            <form action={leaveReview} className="space-y-3">
+              <input type="hidden" name="match_id" value={match.id} />
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  ["punctuality", "Ponctualité"],
+                  ["quality", "Qualité"],
+                  ["availability", "Dispo"],
+                ].map(([name, label]) => (
+                  <label key={name} className="block text-xs text-ink/60">
+                    {label}
+                    <select
+                      name={name}
+                      required
+                      defaultValue=""
+                      className="mt-1 w-full rounded-lg border border-ink/15 bg-white px-2 py-1.5 text-sm text-ink outline-none focus:border-coral"
+                    >
+                      <option value="" disabled>
+                        —
+                      </option>
+                      {[1, 2, 3, 4, 5].map((v) => (
+                        <option key={v} value={v}>
+                          {v}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                ))}
+              </div>
+              <input
+                name="comment"
+                placeholder="Commentaire (optionnel)"
+                className="w-full rounded-lg border border-ink/15 bg-white px-3 py-2 text-sm text-ink outline-none focus:border-coral"
+              />
+              <button className="rounded-full bg-ink px-4 py-1.5 text-xs font-semibold text-sand transition hover:brightness-110">
+                Envoyer l&rsquo;avis
+              </button>
+            </form>
+          )}
+        </div>
+
+        {searchParams.reviewed && (
+          <p className="mt-3 rounded-xl bg-jade/10 px-4 py-3 text-sm font-medium text-ink ring-1 ring-jade/30">
+            Avis enregistré — le Nomad Score a été recalculé.
+          </p>
+        )}
 
         {searchParams.error && (
           <p className="mt-4 rounded-xl bg-coral/10 px-4 py-3 text-sm font-medium text-ink ring-1 ring-coral/30">
