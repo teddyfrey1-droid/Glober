@@ -35,6 +35,12 @@ export const metadata: Metadata = {
     type: "website",
     locale: "fr_FR",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Latitude — La liberté, ça se gagne",
+    description:
+      "Un senior au prix d’un junior, une continuité de service garantie. La marketplace des talents nomades pour entreprises francophones.",
+  },
 };
 
 export default function RootLayout({
