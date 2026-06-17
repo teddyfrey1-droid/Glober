@@ -92,7 +92,7 @@ waitlist (
 | **2** | Projet Supabase `eu-west-3` ; migration `waitlist` + RLS ; **test d'insertion bout-en-bout** (insère → vérifie → supprime la donnée test) ; branchement `SUPABASE_URL` + `SUPABASE_PUBLISHABLE_KEY` | ⏳ |
 | **3** | Déploiement **Vercel** (CLI via token **ou** connexion repo dashboard) ; env `SUPABASE_URL` + `SUPABASE_PUBLISHABLE_KEY` | ⏳ |
 | **4** | **Logo + visuels** dans Figma (skill `/figma-use` avant `use_figma`) | ⏳ |
-| **5** | MVP marketplace : auth ; onboarding nomade & entreprise ; **matching v1 par règles** ; Nomad Score v1 ; messagerie ; abonnement Stripe | 🔄 Data (`supabase/marketplace.sql`) + **auth Supabase** + **onboarding nomade/entreprise** livrés (RLS testée e2e) ; matching v1 / Nomad Score / messagerie / Stripe à suivre |
+| **5** | MVP marketplace : auth ; onboarding nomade & entreprise ; **matching v1 par règles** ; Nomad Score v1 ; messagerie ; abonnement Stripe | 🔄 Data + auth + onboarding + **matching v1 (verticale + fuseau + dispo, rôle primary/Binôme)** livrés (RLS testée e2e) ; Nomad Score auto / messagerie / contrats / Stripe à suivre |
 | **5+** | Contrats B2B générés + Stripe Connect (escrow) ; puis **Binôme** + score automatisé | ⏳ |
 
 ## 7. Critères de passage (definition of done par phase)
